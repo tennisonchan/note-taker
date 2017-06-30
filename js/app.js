@@ -104,29 +104,18 @@
     let text = evt.target.innerText.trim();
     let $li = $(`[data-id="${id}"]`);
 
-    if($input.data('isCanceled')) {
-      this.onEndEditing($li);
-    } else {
-      if(text) {
-        let item = {
-          id: id,
-          text: text,
-          color: this.defaultColor
-        };
-        _storage.save(item, () => {
-          this.onEndEditing($li, text);
-        });
-      } else {
-        this.deleteNote(id);
-      }
-    }
-  }
-
-  App.prototype.onEndEditing = function($li, text) {
-    $li.removeClass('editing')
-
     if(text) {
-      $li.find('span').html(text);
+      let item = {
+        id: id,
+        text: text,
+        color: this.defaultColor
+      };
+      _storage.save(item, () => {
+        $li.removeClass('editing')
+        $li.find('span').html(text);
+      });
+    } else {
+      this.deleteNote(id);
     }
   }
 
