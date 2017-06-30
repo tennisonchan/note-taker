@@ -7,14 +7,22 @@
     this.storage = storage;
     console.log('App.init');
     this.$notes = $('#nt-notes');
-    this.$addNote = $('#nt-add-note');
+    this.$input = $('#nt-add-note');
 
     this.addEventListeners();
+    this.render();
   }
 
   App.prototype.addEventListeners = function() {
-    this.$addNote.on('keypress', this.onAddNote.bind(this));
+    this.$input.on('keypress', this.onAddNote.bind(this));
   }
+
+  App.prototype.render = function() {
+    this.storage.findAll((items) => {
+      let nodes = $(items).map((i, item) => this.noteItem(item));
+      this.$notes.append(nodes);
+    });
+  };
 
   App.prototype.onAddNote = function(evt) {
     let element = evt.target;
