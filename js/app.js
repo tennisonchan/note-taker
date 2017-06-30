@@ -20,7 +20,7 @@
   }
 
   App.prototype.addEventListeners = function() {
-    this.$input.on('keyup', this.onTyping.bind(this));
+    this.$input.on('input', this.onTyping.bind(this));
     this.$input.on('keydown', this.onAddingNote.bind(this));
     this.$addButton.on('click', this.onAddNote.bind(this));
     this.$notes.on('click', '.delete', this.onDeleteNote.bind(this));
