@@ -8,7 +8,7 @@
     _key = key;
 
     if(!_store[_key]) {
-      this.reset();
+      this.loadDummyData();
     }
   }
 
@@ -43,23 +43,45 @@
       items.push(newItem);
     }
 
-    _store[_key] = JSON.stringify(items);
+    setStorage(items);
 
     callback && callback(newItem);
   }
 
-  Storage.prototype.delete = function(id, callback) {
-    let items = this.findAll();
-    items = items.filter(function(item) {
-      return item.id !== id;
-    });
-    _store[_key] = JSON.stringify(items);
-
-    callback && callback(true);
+  function setStorage(object) {
+    _store[_key] = JSON.stringify(object);
   }
 
-  Storage.prototype.reset = function(callback) {
-    _store[_key] = JSON.stringify([]);
+  Storage.prototype.delete = function(id, callback) {
+    let oldItems = this.findAll();
+    let items = oldItems.filter((item) => item.id !== id);
+    setStorage(items);
+
+    callback && callback(items.length !== oldItems.length);
+  }
+
+  Storage.prototype.getColor = function(callback) {
+    callback && callback(_store[`${_key}-color`]);
+  }
+
+  Storage.prototype.setColor = function(color, callback) {
+    _store[`${_key}-color`] = color;
+  }
+
+  Storage.prototype.loadDummyData = function(color, callback) {
+      setStorage([{
+        id: +new Date(),
+        color: 'red',
+        text: 'Hello\nWorld'
+      }, {
+        id: +new Date() + 1,
+        color: 'yellow',
+        text: 'THIS\nIS\nAWESOME!'
+      }, {
+        id: +new Date() + 2,
+        color: 'blue',
+        text: 'Try this out\nAnd type something'
+      }]);
   }
 
   window.Storage = Storage;

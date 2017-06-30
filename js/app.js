@@ -6,8 +6,6 @@
   let _storage = null;
 
   function App(storage) {
-    console.log('App.init');
-
     _storage = storage;
     this.defaultColor = 'white';
     this.$addButton = $('.add-button');
@@ -37,6 +35,7 @@
   }
 
   App.prototype.render = function() {
+    _storage.getColor(this.changeColor.bind(this));
     _storage.findAll((items) => {
       let nodes = $(items).map((i, item) => this.noteItem(item));
       this.$notes.append(nodes);
@@ -49,8 +48,14 @@
 
   App.prototype.onChangeColor = function(evt) {
     let color = $(evt.target).data('color');
-
     this.$colors.toggleClass('editing');
+    this.changeColor(color);
+  }
+
+  App.prototype.changeColor = function(color) {
+    color = color || 'white';
+
+    _storage.setColor(color);
     this.defaultColor = color;
     this.$addNote
       .removeClass('white yellow red blue')
@@ -133,8 +138,8 @@
   }
 
   App.prototype.deleteNote = function(id) {
-    _storage.delete(id, () => {
-      $(`[data-id="${id}"]`).remove();
+    _storage.delete(id, (success) => {
+      success && $(`[data-id="${id}"]`).remove();
     });
   }
 
