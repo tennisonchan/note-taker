@@ -24,9 +24,8 @@
     this.$input.on('keydown', this.onAddingNote.bind(this));
     this.$addButton.on('click', this.onAddNote.bind(this));
     this.$notes.on('click', '.delete', this.onDeleteNote.bind(this));
-    this.$notes.on('click', '.edit', this.onEditNote.bind(this));
-    this.$notes.on('keyup', '.edit-input', this.onEditingCancel.bind(this));
-    this.$notes.on('blur', '.edit-input', this.onEditingLeave.bind(this) );
+    this.$notes.on('focus', '.note', this.onFocusEdit.bind(this));
+    this.$notes.on('blur', '.note', this.onBlurEdit.bind(this) );
   }
 
   App.prototype.render = function() {
@@ -60,7 +59,7 @@
     this.deleteNote(getItemId(evt.target));
   }
 
-  App.prototype.onEditNote = function(evt) {
+  App.prototype.onFocusEdit = function(evt) {
     this.onStartEditing(evt);
   }
 
@@ -68,11 +67,7 @@
     let $li = $(evt.target).parents('li');
     this.currentId = Number($li.data('id'));
 
-    $li
-      .addClass('editing')
-      .find('.edit-input')
-      .val($li.text())
-      .focus();
+    $li.addClass('editing');
   }
 
   App.prototype.onEditingDone = function(event) {
@@ -81,17 +76,10 @@
     }
   }
 
-  App.prototype.onEditingCancel = function(evt) {
-    if(evt.keyCode === ESC_KEY) {
-      evt.target.dataset.isCanceled = true;
-      evt.target.blur();
-    }
-  }
-
-  App.prototype.onEditingLeave = function(evt) {
+  App.prototype.onBlurEdit = function(evt) {
     let $input = $(evt.target);
     let id = getItemId($input);
-    let text = $input.val().trim();
+    let text = evt.target.innerText.trim();
     let $li = $(`[data-id="${id}"]`);
 
     if($input.data('isCanceled')) {
@@ -113,10 +101,7 @@
   }
 
   App.prototype.onEndEditing = function($li, text) {
-    $li
-      .removeClass('editing')
-      .find('.edit-input')
-      .removeAttr('data-is-canceled');
+    $li.removeClass('editing')
 
     if(text) {
       $li.find('span').html(text);
@@ -146,19 +131,14 @@
     let { color, id, text } = item;
     let $note = $('<div/>', { class: `note ${color} shadow` });
     let $deleteButton = $('<button/>', { class: 'delete' });
-    let $editButton = $('<button/>', { class: 'edit', text: 'Edit' });
-    let $editInput = $('<input/>', {
-      class: 'edit-input',
-      type: 'text'
-    });
     let $content = $('<div/>', {
       contenteditable: true,
       text: text
     });
-    $note.append($content, $editButton, $deleteButton);
+    $note.append($content, $deleteButton);
 
     return $('<li/>', { 'data-id': id })
-      .append($note, $editInput)
+      .append($note)
       .get(0);
   }
 
