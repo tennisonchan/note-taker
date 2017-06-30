@@ -29,8 +29,19 @@
   Storage.prototype.save = function(newItem, callback) {
     let items = this.findAll();
 
-    newItem.id = new Date().getTime();
-    items.push(newItem);
+    if(newItem.id) {
+      items = items.map(function(item) {
+        if(item.id === newItem.id) {
+          for(let prop in newItem) {
+            item[prop] = newItem[prop];
+          }
+        }
+        return item;
+      });
+    } else {
+      newItem.id = new Date().getTime();
+      items.push(newItem);
+    }
 
     _store[_key] = JSON.stringify(items);
 
