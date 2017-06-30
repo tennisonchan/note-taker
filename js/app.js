@@ -10,22 +10,30 @@
 
     _storage = storage;
     this.defaultColor = 'white';
-    this.$notes = $('#nt-notes');
-    this.$input = $('#add-note-input');
     this.$addButton = $('.add-button');
     this.$addNote = $('.add-note');
+    this.$colorButton = $('.color-button');
+    this.$colors = $('.colors');
+    this.$input = $('#add-note-input');
+    this.$notes = $('#nt-notes');
 
     this.addEventListeners();
     this.render();
   }
 
   App.prototype.addEventListeners = function() {
-    this.$input.on('input', this.onTyping.bind(this));
-    this.$input.on('keydown', this.onAddingNote.bind(this));
     this.$addButton.on('click', this.onAddNote.bind(this));
-    this.$notes.on('click', '.delete', this.onDeleteNote.bind(this));
-    this.$notes.on('focus', '.note', this.onFocusEdit.bind(this));
-    this.$notes.on('blur', '.note', this.onBlurEdit.bind(this) );
+    this.$colorButton.on('click', this.onShowColors.bind(this));
+    this.$colors.on('click', '.color', this.onChangeColor.bind(this));
+
+    this.$input
+      .on('input', this.onTyping.bind(this))
+      .on('keydown', this.onAddingNote.bind(this));
+
+    this.$notes
+      .on('click', '.delete', this.onDeleteNote.bind(this))
+      .on('focus', '.note', this.onFocusEdit.bind(this))
+      .on('blur', '.note', this.onBlurEdit.bind(this) );
   }
 
   App.prototype.render = function() {
@@ -33,6 +41,20 @@
       let nodes = $(items).map((i, item) => this.noteItem(item));
       this.$notes.append(nodes);
     });
+  }
+
+  App.prototype.onShowColors = function(evt) {
+    this.$colors.toggleClass('editing');
+  }
+
+  App.prototype.onChangeColor = function(evt) {
+    let color = $(evt.target).data('color');
+
+    this.$colors.toggleClass('editing');
+    this.defaultColor = color;
+    this.$addNote
+      .removeClass('white yellow red blue')
+      .addClass(color);
   }
 
   App.prototype.onAddNote = function(evt) {
