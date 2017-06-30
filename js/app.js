@@ -11,14 +11,18 @@
     _storage = storage;
     this.defaultColor = 'white';
     this.$notes = $('#nt-notes');
-    this.$input = $('#nt-add-note');
+    this.$input = $('#add-note-input');
+    this.$addButton = $('.add-button');
+    this.$addNote = $('.add-note');
 
     this.addEventListeners();
     this.render();
   }
 
   App.prototype.addEventListeners = function() {
-    this.$input.on('keypress', this.onAddNote.bind(this));
+    this.$input.on('keyup', this.onTyping.bind(this));
+    this.$input.on('keydown', this.onAddingNote.bind(this));
+    this.$addButton.on('click', this.onAddNote.bind(this));
     this.$notes.on('click', '.delete', this.onDeleteNote.bind(this));
     this.$notes.on('click', '.edit', this.onEditNote.bind(this));
     this.$notes.on('keyup', '.edit-input', this.onEditingCancel.bind(this));
@@ -30,24 +34,35 @@
       let nodes = $(items).map((i, item) => this.noteItem(item));
       this.$notes.append(nodes);
     });
-  };
+  }
 
   App.prototype.onAddNote = function(evt) {
-    let element = evt.target;
-    let text = element.value.trim();
-    if(text && evt.keyCode === ENTER_KEY) {
+    let text = this.$input.get(0).innerText;
+    if(text) {
       this.addNote(text);
-      element.value = '';
+      this.$input.text('');
+      this.$addNote.toggleClass('typing', false);
+    }
+  }
+
+  App.prototype.onTyping = function(evt) {
+    let text = evt.target.innerText;
+    this.$addNote.toggleClass('typing', !!text);
+  }
+
+  App.prototype.onAddingNote = function(evt) {
+    if(evt.keyCode === ENTER_KEY && (evt.metaKey || evt.ctrlKey)) {
+      this.onAddNote(evt);
     }
   }
 
   App.prototype.onDeleteNote = function(evt) {
     this.deleteNote(getItemId(evt.target));
-  };
+  }
 
   App.prototype.onEditNote = function(evt) {
     this.onStartEditing(evt);
-  };
+  }
 
   App.prototype.onStartEditing = function(evt) {
     let $li = $(evt.target).parents('li');
@@ -58,20 +73,20 @@
       .find('.edit-input')
       .val($li.text())
       .focus();
-  };
+  }
 
   App.prototype.onEditingDone = function(event) {
     if(event.keyCode === ENTER_KEY) {
       event.target.blur();
     }
-  };
+  }
 
   App.prototype.onEditingCancel = function(evt) {
     if(evt.keyCode === ESC_KEY) {
       evt.target.dataset.isCanceled = true;
       evt.target.blur();
     }
-  };
+  }
 
   App.prototype.onEditingLeave = function(evt) {
     let $input = $(evt.target);
@@ -95,7 +110,7 @@
         this.deleteNote(id);
       }
     }
-  };
+  }
 
   App.prototype.onEndEditing = function($li, text) {
     $li
@@ -106,11 +121,11 @@
     if(text) {
       $li.find('span').html(text);
     }
-  };
+  }
 
   function getItemId(el) {
     return Number($(el).parents('li').data('id'));
-  };
+  }
 
   App.prototype.addNote = function(text) {
     let item = { text: text, color: this.defaultColor };
@@ -125,24 +140,25 @@
     _storage.delete(id, () => {
       $(`[data-id="${id}"]`).remove();
     });
-  };
+  }
 
   App.prototype.noteItem = function(item) {
     let { color, id, text } = item;
-    let $div = $('<div/>', { class: `note ${color}` });
+    let $note = $('<div/>', { class: `note ${color} shadow` });
     let $deleteButton = $('<button/>', { class: 'delete' });
-    let $editButton = $('<button/>', { class: 'edit' });
+    let $editButton = $('<button/>', { class: 'edit', text: 'Edit' });
     let $editInput = $('<input/>', {
       class: 'edit-input',
       type: 'text'
     });
-    let $span = $('<span/>', {
+    let $content = $('<div/>', {
+      contenteditable: true,
       text: text
     });
-    $div.append($span, $editButton, $deleteButton);
+    $note.append($content, $editButton, $deleteButton);
 
     return $('<li/>', { 'data-id': id })
-      .append($div, $editInput)
+      .append($note, $editInput)
       .get(0);
   }
 

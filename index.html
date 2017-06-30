@@ -8,8 +8,10 @@
 <body>
   <h1>Note Taker</h1>
   <div class="row">
-    <div class="row add-note">
-      <input type="text" id="nt-add-note" placeholder="Take a note">
+    <div class="row add-note shadow">
+      <div class="placeholder">Take a note</div>
+      <div type="text" id="add-note-input" contenteditable="true"></div>
+      <button class="add-button">Add</button>
     </div>
     <div class="row">
       <ul class="notes" id="nt-notes"></ul>
