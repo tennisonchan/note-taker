@@ -15,6 +15,7 @@
 
   App.prototype.addEventListeners = function() {
     this.$input.on('keypress', this.onAddNote.bind(this));
+    this.$notes.on('click', '.delete', this.onDeleteNote.bind(this));
   }
 
   App.prototype.render = function() {
@@ -33,6 +34,14 @@
     }
   }
 
+  App.prototype.onDeleteNote = function(evt) {
+    this.deleteNote(getItemId(evt.target));
+  };
+
+  function getItemId(el) {
+    return Number($(el).parents('li').data('id'));
+  };
+
   App.prototype.addNote = function(text) {
     let item = { text: text, color: 'white' };
 
@@ -41,6 +50,12 @@
       this.$notes.append(element);
     });
   }
+
+  App.prototype.deleteNote = function(id) {
+    this.storage.delete(id, () => {
+      $(`[data-id="${id}"]`).remove();
+    });
+  };
 
   App.prototype.noteItem = function(item) {
     let { color, id, text } = item;
