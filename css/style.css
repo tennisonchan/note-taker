@@ -21,18 +21,23 @@ html {
 }
 
 .add-note {
+  border-radius: 2px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+  margin: 32px auto 16px auto;
   overflow: hidden;
-  padding: 30px;
+  padding: 25px;
   position: relative;
+  width: 600px;
 }
 
 #nt-add-note {
   border: none;
   font-family: inherit;
   font-size: 23px;
-  height: 60px;
-  left: 50px;
+  height: 50px;
+  left: 0;
   outline: none;
+  padding-left: 50px;
   position: absolute;
   top: 0;
   width: 100%;
@@ -42,14 +47,51 @@ html {
   position: relative;
 }
 
+.notes li {
+  list-style: none;
+  overflow: hidden;
+  padding: 10px 20px;
+  position: relative;
+}
+
+.note.black {
+  background: #25222B;
+}
+
+.note {
+  position: relative;
+}
+
+.note span {
+  display: block;
+  font-size: 23px;
+  line-height: 30px;
+  margin-left: 30px;
+  transition: color 0.3s ease-out;
+}
+
+.edit {
+  position: absolute;
+  display: block;
+  top: 0;
+  right: 30px;
+  border: none;
+  width: 30px;
+  height: 30px;
+  background: url(../images/edit.svg) center;
+  background-size: 25px;
+  z-index: 2;
+  outline: none;
+}
+
 .delete {
   position: absolute;
   display: block;
-  top: 0px;
+  top: 0;
   right: 0;
   border: none;
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   background: transparent;
   z-index: 2;
   outline: none;
@@ -59,8 +101,8 @@ html {
 .delete:after {
   content: '';
   position: absolute;
-  top: 12.5px;
-  left: 24px;
+  top: 2px;
+  left: 15px;
   width: 1px;
   height: 25px;
   background: #000;
@@ -69,6 +111,47 @@ html {
 }
 
 .delete:after {
-  left: 25px;
   transform: rotateZ(-45deg);
+}
+
+.edit-input {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-left: 50px;
+  width: 0%;
+  height: 50px;
+  opacity: 0;
+  margin: auto 0;
+  font-size: 23px;
+  font-family: inherit;
+  color: #000;
+  margin-bottom: 11px;
+  border: none;
+  outline: none;
+  z-index: 9;
+}
+
+@keyframes anime {
+  0% {
+    opacity: 0;
+    width: 0%;
+  }
+  100% {
+    opacity: 1;
+    width: 100%;
+  }
+}
+
+.editing .edit-input {
+  animation: anime .3s ease-out forwards;
+}
+
+.editing .edit-input {
+  display: block;
+}
+
+.editing .note-taker {
+  visibility: hidden;
 }
