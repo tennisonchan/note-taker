@@ -3,7 +3,8 @@
 
   const ENTER_KEY = 13;
 
-  function App() {
+  function App(storage) {
+    this.storage = storage;
     console.log('App.init');
     this.$notes = $('#nt-notes');
     this.$addNote = $('#nt-add-note');
@@ -16,7 +17,6 @@
   }
 
   App.prototype.onAddNote = function(evt) {
-    debugger;
     let element = evt.target;
     let text = element.value.trim();
     if(text && evt.keyCode === ENTER_KEY) {
@@ -28,8 +28,10 @@
   App.prototype.addNote = function(text) {
     let item = { text: text, color: 'white' };
 
-    let element = this.noteItem(item);
-    this.$notes.append(element);
+    this.storage.save(item, (item) => {
+      let element = this.noteItem(item);
+      this.$notes.append(element);
+    });
   }
 
   App.prototype.noteItem = function(item) {
@@ -48,7 +50,7 @@
   }
 
   $(function() {
-    window.NoteTaker = new App();
+    window.NoteTaker = new App(new Storage('note-taker'));
   });
 
 })(window, jQuery)

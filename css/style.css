@@ -63,7 +63,7 @@ html {
   left: 24px;
   width: 1px;
   height: 25px;
-  background: #EE1630;
+  background: #000;
   transition: all .5s ease-out;
   transform: rotateZ(45deg);
 }
