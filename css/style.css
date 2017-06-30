@@ -7,3 +7,68 @@ html {
   margin: 0;
   padding: 0;
 }
+
+.row:before,
+.row:after {
+  content: "";
+  display: table;
+}
+.row:after {
+  clear: both;
+}
+.row {
+  zoom: 1;
+}
+
+.add-note {
+  overflow: hidden;
+  padding: 30px;
+  position: relative;
+}
+
+#nt-add-note {
+  border: none;
+  font-family: inherit;
+  font-size: 23px;
+  height: 60px;
+  left: 50px;
+  outline: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.notes {
+  position: relative;
+}
+
+.delete {
+  position: absolute;
+  display: block;
+  top: 0px;
+  right: 0;
+  border: none;
+  width: 50px;
+  height: 50px;
+  background: transparent;
+  z-index: 2;
+  outline: none;
+}
+
+.delete:before,
+.delete:after {
+  content: '';
+  position: absolute;
+  top: 12.5px;
+  left: 24px;
+  width: 1px;
+  height: 25px;
+  background: #EE1630;
+  transition: all .5s ease-out;
+  transform: rotateZ(45deg);
+}
+
+.delete:after {
+  left: 25px;
+  transform: rotateZ(-45deg);
+}
